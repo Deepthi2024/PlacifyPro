@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Placify AI — Placement Preparation Platform
 
 Placify AI is an intelligent placement preparation platform featuring AI-guided domain learning, adaptive roadmaps, NPTEL-style diagnostic assessments, Groq-powered technical interview preparation, personalized tech news, internship tracking, and an interactive context-aware floating AI assistant.
@@ -188,3 +189,6 @@ This validates:
 - Guaranteed 8-domain catalog coverage (Level 4)
 - Technical subtopic resolver
 - Duplicate URL deduplication
+=======
+# PlacifyPro
+>>>>>>> origin/main
