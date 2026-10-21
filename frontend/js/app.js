@@ -3988,7 +3988,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         console.log(`[Direct Build] Generating roadmap for user ${currentUserId}: Starting = "${selectedStartingLevel}", Target = "${selectedTargetGoal}"...`);
-        const genRes = await fetch('http://localhost:5000/api/roadmap/generate', {
+        const genRes = await fetch(`${window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL || 'http://localhost:5000'}/api/roadmap/generate`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
