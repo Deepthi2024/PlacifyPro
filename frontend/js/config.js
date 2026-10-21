@@ -7,7 +7,7 @@
   'use strict';
 
   // Allow override from environment or script tag before load
-  const existingConfig = window.PLACIFY_CONFIG || {};
+  const existingConfig = window.PLACIFY_CONFIG || window.PLACIFY_DEPLOYMENT_CONFIG || {};
 
   function resolveBackendBaseUrl() {
     // 1. Explicit override if set
