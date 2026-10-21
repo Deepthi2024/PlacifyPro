@@ -2942,7 +2942,7 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmDomainBtn.disabled = true;
         confirmDomainBtn.innerHTML = '<i class="ph ph-spinner spinner"></i> Saving Domain...';
 
-        const res = await fetch(`http://localhost:5000/api/user/${userId}/domain`, {
+        const res = await fetch(`${window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL || 'http://localhost:5000'}/api/user/${userId}/domain`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3021,7 +3021,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         confirmDsaLanguageBtn.disabled = true;
         confirmDsaLanguageBtn.innerHTML = '<i class="ph ph-spinner spinner"></i> Saving Language...';
-        const res = await fetch(`http://localhost:5000/api/user/${userId}/domain`, {
+        const res = await fetch(`${window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL || 'http://localhost:5000'}/api/user/${userId}/domain`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chosen_domain: 'dsa', dsa_language: selectedDsaLanguage })
