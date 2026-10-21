@@ -699,7 +699,7 @@ class QuizEvaluatorAgent {
       };
 
       try {
-        const res = await fetch('http://localhost:5000/api/quiz/evaluate', {
+        const res = await fetch('${PLACIFY_API_BASE_URL}/api/quiz/evaluate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -971,7 +971,7 @@ class QuizEvaluatorAgent {
 
     // Async save to MongoDB Atlas backend (awaited)
     try {
-      const res = await fetch('http://localhost:5000/api/quiz/evaluate', {
+      const res = await fetch('${PLACIFY_API_BASE_URL}/api/quiz/evaluate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -2102,7 +2102,7 @@ class ResourceFetcherAgent {
   async fetchContentAndBuildAssessment(conceptTitle, topic, taskContext = {}) {
     const session = window.placifySupervisor?.authAgent?.getActiveSession?.();
     const tasks = Array.isArray(taskContext.tasks) ? taskContext.tasks : (taskContext.task ? [taskContext.task] : []);
-    const response = await fetch('http://localhost:5000/api/daily-assessment/generate', {
+    const response = await fetch('${PLACIFY_API_BASE_URL}/api/daily-assessment/generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user_id: session?.user_id || taskContext.user_id,
@@ -2121,7 +2121,7 @@ class ResourceFetcherAgent {
   async gradeAssessment(questions, userAnswers, userId) {
     const session = window.placifySupervisor?.authAgent?.getActiveSession?.();
     const uid = userId || session?.user_id;
-    const response = await fetch('http://localhost:5000/api/daily-assessment/grade', {
+    const response = await fetch('${PLACIFY_API_BASE_URL}/api/daily-assessment/grade', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ questions, user_answers: userAnswers, user_id: uid })
     });
@@ -2132,7 +2132,7 @@ class ResourceFetcherAgent {
 
   async generateInterviewQuestions(taskContext = {}) {
     const session = window.placifySupervisor?.authAgent?.getActiveSession?.();
-    const response = await fetch('http://localhost:5000/api/interview-questions/generate', {
+    const response = await fetch('${PLACIFY_API_BASE_URL}/api/interview-questions/generate', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id: session?.user_id || taskContext.user_id, domain: taskContext.domain, skill_level: taskContext.skillLevel || taskContext.userLevel || 'BEGINNER', dsa_language: taskContext.dsaLanguage || null, day_number: taskContext.dayNumber || window.currentActiveDay || 1, tasks: taskContext.tasks || [] })
     });
@@ -2750,7 +2750,7 @@ class PlacifySupervisorAgent {
     }
 
     try {
-      const userRes = await fetch(`http://localhost:5000/api/user/${userId}`);
+      const userRes = await fetch(`${PLACIFY_API_BASE_URL}/api/user/${userId}`);
       const userData = await userRes.json();
 
       if (!userData.success || !userData.profile) {
@@ -2772,7 +2772,7 @@ class PlacifySupervisorAgent {
     // Priority 2: If quiz_completed is true, quiz must NEVER be shown again! Check existing evaluation and roadmap.
     let evaluation = null;
     try {
-      const evalRes = await fetch(`http://localhost:5000/api/quiz/evaluation/${encodeURIComponent(userId)}`);
+      const evalRes = await fetch(`${PLACIFY_API_BASE_URL}/api/quiz/evaluation/${encodeURIComponent(userId)}`);
       if (evalRes.ok) {
         const evalData = await evalRes.json();
         if (evalData && evalData.success && evalData.evaluation) {
@@ -2785,7 +2785,7 @@ class PlacifySupervisorAgent {
 
     let roadmap = null;
     try {
-      const rmRes = await fetch(`http://localhost:5000/api/roadmap/user/${encodeURIComponent(userId)}`);
+      const rmRes = await fetch(`${PLACIFY_API_BASE_URL}/api/roadmap/user/${encodeURIComponent(userId)}`);
       if (rmRes.ok) {
         const rmData = await rmRes.json();
         if (rmData && rmData.success && rmData.roadmap) {
@@ -2800,7 +2800,7 @@ class PlacifySupervisorAgent {
     if (!roadmap) {
       console.log(`⚡ Quiz completed for ${userId} but roadmap missing. Auto-generating...`);
       try {
-        const genRes = await fetch('http://localhost:5000/api/roadmap/generate', {
+        const genRes = await fetch('${PLACIFY_API_BASE_URL}/api/roadmap/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userId, quizEvaluation: evaluation })
@@ -2936,7 +2936,7 @@ class PlacifySupervisorAgent {
 
     let finalRoadmap = null;
     try {
-      const res = await fetch('http://localhost:5000/api/roadmap/generate', {
+      const res = await fetch('${PLACIFY_API_BASE_URL}/api/roadmap/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
