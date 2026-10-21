@@ -20,7 +20,9 @@
  * There is NO localStorage authentication fallback.
  * ============================================================
  */
-
+const PLACIFY_API_BASE_URL =
+  window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL ||
+  'http://localhost:5000';
 
 /* ============================================================
    1. AUTHENTICATION AGENT
@@ -126,7 +128,7 @@ class AuthAgent {
 
 
       const response = await fetch(
-        'http://localhost:5000/api/auth/register',
+        `${PLACIFY_API_BASE_URL}/api/auth/register`,
         {
           method: 'POST',
 
@@ -251,7 +253,7 @@ class AuthAgent {
 
 
       const response = await fetch(
-        'http://localhost:5000/api/auth/login',
+        `${PLACIFY_API_BASE_URL}/api/auth/login`,
         {
           method: 'POST',
 
