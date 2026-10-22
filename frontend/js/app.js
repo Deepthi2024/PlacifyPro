@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Asynchronously persist last_route in MongoDB Atlas for authenticated users
     if (activeSession && activeSession.user_id && actualView !== 'onboarding' && actualView !== 'diagnostic' && actualView !== 'diagnosticQuiz' && actualView !== 'domainSelection') {
-      fetch('http://localhost:5000/api/user/route', {
+      fetch('https://placify-backend-api.onrender.com/api/user/route', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: activeSession.user_id, last_route: actualView })
@@ -742,7 +742,7 @@ document.addEventListener('DOMContentLoaded', () => {
       historyEl.scrollTop = historyEl.scrollHeight;
 
       try {
-        const response = await fetch('http://localhost:5000/api/domain-assistant', {
+        const response = await fetch('https://placify-backend-api.onrender.com/api/domain-assistant', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -2942,7 +2942,7 @@ document.addEventListener('DOMContentLoaded', () => {
         confirmDomainBtn.disabled = true;
         confirmDomainBtn.innerHTML = '<i class="ph ph-spinner spinner"></i> Saving Domain...';
 
-        const res = await fetch(`${window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL || 'http://localhost:5000'}/api/user/${userId}/domain`, {
+        const res = await fetch(`${window.PLACIFY_API_BASE_URL}/api/user/${userId}/domain`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -3021,7 +3021,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         confirmDsaLanguageBtn.disabled = true;
         confirmDsaLanguageBtn.innerHTML = '<i class="ph ph-spinner spinner"></i> Saving Language...';
-        const res = await fetch(`${window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL || 'http://localhost:5000'}/api/user/${userId}/domain`, {
+        const res = await fetch(`${window.PLACIFY_API_BASE_URL}/api/user/${userId}/domain`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ chosen_domain: 'dsa', dsa_language: selectedDsaLanguage })
@@ -3470,7 +3470,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // 3. Valid combination - generate roadmap
-      const roadmapRes = await fetch('http://localhost:5000/api/roadmap/generate', {
+      const roadmapRes = await fetch('https://placify-backend-api.onrender.com/api/roadmap/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -3893,7 +3893,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         console.log(`[Frontend Quiz Gen] Requesting ${selectedQuestionCount} questions for domain ${chosenDomain} evaluating Step 1 starting level: ${selectedStartingLevel}...`);
-        const res = await fetch('http://localhost:5000/api/quiz/generate', {
+        const res = await fetch('https://placify-backend-api.onrender.com/api/quiz/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -4217,7 +4217,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeSession = supervisor.authAgent.getActiveSession();
       if (activeSession && activeSession.user_id) {
         try {
-          const genRes = await fetch('http://localhost:5000/api/roadmap/generate', {
+          const genRes = await fetch('https://placify-backend-api.onrender.com/api/roadmap/generate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: activeSession.user_id })
@@ -4368,7 +4368,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
               const clientSystemDate = new Date().toISOString();
-              const res = await fetch('http://localhost:5000/api/roadmap/start', {
+              const res = await fetch('https://placify-backend-api.onrender.com/api/roadmap/start', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId, start_date: clientSystemDate })
@@ -5028,7 +5028,7 @@ document.addEventListener('DOMContentLoaded', () => {
           btn.innerHTML = `<i class="ph ph-spinner spinner"></i> Regenerating...`;
         }
 
-        const res = await fetch('http://localhost:5000/api/roadmap/generate', {
+        const res = await fetch('https://placify-backend-api.onrender.com/api/roadmap/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: userId })
@@ -6358,7 +6358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userId: userId
       });
 
-      const response = await fetch(`http://localhost:5000/api/internships?${queryParams.toString()}`);
+      const response = await fetch(`https://placify-backend-api.onrender.com/api/internships?${queryParams.toString()}`);
       const data = await response.json();
 
       if (!response.ok || !data.success) {
@@ -6585,7 +6585,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btnConfirmTrack.innerHTML = '<i class="ph ph-spinner spinner"></i> Saving...';
 
       try {
-        const response = await fetch('http://localhost:5000/api/applications', {
+        const response = await fetch('https://placify-backend-api.onrender.com/api/applications', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -6673,7 +6673,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const statusQuery = atsState.filter && atsState.filter !== 'All' ? `&status=${encodeURIComponent(atsState.filter)}` : '';
-      const response = await fetch(`http://localhost:5000/api/applications?userId=${encodeURIComponent(userId)}${statusQuery}`);
+      const response = await fetch(`https://placify-backend-api.onrender.com/api/applications?userId=${encodeURIComponent(userId)}${statusQuery}`);
       const data = await response.json();
 
       if (!response.ok || !data.success) {
@@ -6830,7 +6830,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!userId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/applications/${appId}?userId=${userId}`);
+      const response = await fetch(`https://placify-backend-api.onrender.com/api/applications/${appId}?userId=${userId}`);
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || 'Failed to load details.');
 
@@ -6905,7 +6905,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const response = await fetch(`http://localhost:5000/api/applications/${appId}/status`, {
+        const response = await fetch(`https://placify-backend-api.onrender.com/api/applications/${appId}/status`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -6936,7 +6936,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!userId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/applications/${appId}?userId=${userId}`);
+      const response = await fetch(`https://placify-backend-api.onrender.com/api/applications/${appId}?userId=${userId}`);
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.error || 'Failed to load timeline.');
 
@@ -7014,7 +7014,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!userId || !appId) return;
 
     try {
-      const response = await fetch(`http://localhost:5000/api/applications/${appId}`, {
+      const response = await fetch(`https://placify-backend-api.onrender.com/api/applications/${appId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId })
@@ -7297,11 +7297,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (userId) {
         try {
-          await fetch('http://localhost:5000/api/task/rollover', {
+          await fetch('https://placify-backend-api.onrender.com/api/task/rollover', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ user_id: userId, month: cur.month || 1, week: cur.week || 1, day: cur.day || window.currentActiveDay || 1 })
           });
-          const fresh = await fetch(`http://localhost:5000/api/roadmap/user/${userId}`);
+          const fresh = await fetch(`https://placify-backend-api.onrender.com/api/roadmap/user/${userId}`);
           const freshData = await fresh.json();
           if (fresh.ok && freshData.success && freshData.roadmap) {
             roadmap = freshData.roadmap;
@@ -7675,7 +7675,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       // Fallback: Fetch latest assessment from MongoDB backend
-      const res = await fetch(`http://localhost:5000/api/phase-assessment/user/${encodeURIComponent(userId)}`);
+      const res = await fetch(`https://placify-backend-api.onrender.com/api/phase-assessment/user/${encodeURIComponent(userId)}`);
       if (res.ok) {
         const data = await res.json();
         if (data.success && Array.isArray(data.assessments) && data.assessments.length > 0) {
@@ -8002,7 +8002,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Persist evaluation in MongoDB backend Atlas
         let savedUserStats = null;
         try {
-          const saveRes = await fetch('http://localhost:5000/api/phase-assessment/save', {
+          const saveRes = await fetch('https://placify-backend-api.onrender.com/api/phase-assessment/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(evalData)
@@ -8147,8 +8147,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try {
         const [rmRes, progRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/roadmap/user/${encodeURIComponent(session.user_id)}`),
-          fetch(`http://localhost:5000/api/progress/${encodeURIComponent(session.user_id)}`)
+          fetch(`https://placify-backend-api.onrender.com/api/roadmap/user/${encodeURIComponent(session.user_id)}`),
+          fetch(`https://placify-backend-api.onrender.com/api/progress/${encodeURIComponent(session.user_id)}`)
         ]);
 
         if (rmRes.ok) {
@@ -8497,7 +8497,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let roadmap = userState.personalizedRoadmap || window.activePersonalizedRoadmap;
     if (!roadmap && activeSession.user_id) {
       try {
-        const resp = await fetch(`http://localhost:5000/api/roadmap/${encodeURIComponent(activeSession.user_id)}`);
+        const resp = await fetch(`https://placify-backend-api.onrender.com/api/roadmap/${encodeURIComponent(activeSession.user_id)}`);
         if (resp.ok) {
           const data = await resp.json();
           if (data && data.roadmap) roadmap = data.roadmap;
@@ -8644,7 +8644,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
 
       try {
-        const url = `http://localhost:5000/api/interview-resources?domain=${encodeURIComponent(domainName)}&topic=${encodeURIComponent(domainName)}&level=${encodeURIComponent(userLevel)}&resource_type=${encodeURIComponent(resType)}`;
+        const url = `https://placify-backend-api.onrender.com/api/interview-resources?domain=${encodeURIComponent(domainName)}&topic=${encodeURIComponent(domainName)}&level=${encodeURIComponent(userLevel)}&resource_type=${encodeURIComponent(resType)}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Server returned status ${res.status}`);
         const data = await res.json();
@@ -8745,7 +8745,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const roadmapFocusAreas = phases.map(p => p.title || p.topic).filter(Boolean);
 
       try {
-        const res = await fetch('http://localhost:5000/api/interview-questions/generate', {
+        const res = await fetch('https://placify-backend-api.onrender.com/api/interview-questions/generate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -8786,7 +8786,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Persist to interview history log
         try {
-          await fetch('http://localhost:5000/api/interview-practice/save', {
+          await fetch('https://placify-backend-api.onrender.com/api/interview-practice/save', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -8938,7 +8938,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (confirm('Are you sure you want to reset your Placify learning profile and restart onboarding?')) {
         if (activeSession && activeSession.user_id) {
           try {
-            await fetch(`http://localhost:5000/api/user/reset/${encodeURIComponent(activeSession.user_id)}`, { method: 'POST' });
+            await fetch(`https://placify-backend-api.onrender.com/api/user/reset/${encodeURIComponent(activeSession.user_id)}`, { method: 'POST' });
           } catch (e) {
             console.warn('Could not reset user on server:', e);
           }
@@ -9423,7 +9423,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const context = getChatbotCurrentContext();
 
     try {
-      const response = await fetch('http://localhost:5000/api/chat', {
+      const response = await fetch('https://placify-backend-api.onrender.com/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
