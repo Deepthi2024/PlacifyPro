@@ -14,7 +14,7 @@
 (function () {
   'use strict';
 
-  var STEP_MS = 3600;          // time each tip stays visible
+  var STEP_MS = 5000;          // time each tip stays visible
   var MOVE_MS = 700;           // hand travel time
   var SETTLE_MS = 450;         // wait for DOM to settle before (re)evaluating
 

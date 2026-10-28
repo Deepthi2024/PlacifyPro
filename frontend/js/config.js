@@ -7,31 +7,37 @@
   'use strict';
 
   // Allow override from environment or script tag before load
-  const existingConfig = window.PLACIFY_CONFIG || {};
+  const existingConfig = window.PLACIFY_CONFIG || window.PLACIFY_DEPLOYMENT_CONFIG || {};
 
-  function resolveBackendBaseUrl() {
-    // 1. Explicit override if set
-    if (existingConfig.API_BASE_URL) {
-      return existingConfig.API_BASE_URL.replace(/\/+$/, '');
-    }
+  
+function resolveBackendBaseUrl() {
+  // 1. Always prioritize the explicit deployment configuration
+  const deploymentUrl =
+    window.PLACIFY_DEPLOYMENT_CONFIG?.API_BASE_URL;
 
-    // 2. Browser origin detection
-    const hostname = window.location.hostname || 'localhost';
-    const port = window.location.port || '';
+  if (deploymentUrl) {
+    return deploymentUrl.replace(/\/+$/, '');
+  }
 
-    // If running standalone frontend (e.g., port 3000 or anything non-5000), default to backend at port 5000
-    if ((hostname === 'localhost' || hostname === '127.0.0.1') && port !== '5000') {
-      return 'http://localhost:5000';
-    }
+  // 2. Support an explicitly configured API URL
+  if (existingConfig.API_BASE_URL) {
+    return existingConfig.API_BASE_URL.replace(/\/+$/, '');
+  }
 
-    // 3. Unified server or production domain
-    if (window.location.origin && window.location.origin !== 'null' && window.location.origin.startsWith('http')) {
-      return window.location.origin.replace(/\/+$/, '');
-    }
+  // 3. Use localhost only for local development
+  const hostname = window.location.hostname;
 
-    // Default fallback
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
     return 'http://localhost:5000';
   }
+
+  // 4. Fail clearly rather than sending production requests
+  // to the frontend's own domain
+  throw new Error(
+    'Backend URL is missing. Check deployment-config.js.'
+  );
+}
+
 
   const API_BASE_URL = resolveBackendBaseUrl();
 

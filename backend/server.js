@@ -54,6 +54,75 @@ const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
 /**
+ * Returns a UTC calendar-day key for consistent storage and comparison.
+ * Activity is counted once per distinct date, regardless of number of actions.
+ */
+function toUtcDateKey(value) {
+  if (!value) return null;
+
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) return null;
+
+  return date.toISOString().slice(0, 10);
+}
+
+function getJourneyActivityMetrics(userDoc, referenceDate = new Date()) {
+  const journeyStartDate = userDoc && userDoc.journey_start_date
+    ? userDoc.journey_start_date
+    : null;
+
+  const journeyStarted = Boolean(
+    userDoc && userDoc.journey_started && journeyStartDate
+  );
+
+  const startDay = journeyStarted
+    ? toUtcDateKey(journeyStartDate)
+    : null;
+
+  const todayDay = toUtcDateKey(referenceDate);
+
+  const journeyDays = startDay && todayDay && startDay <= todayDay
+    ? Math.floor(
+        (
+          Date.parse(`${todayDay}T00:00:00Z`) -
+          Date.parse(`${startDay}T00:00:00Z`)
+        ) / 86400000
+      ) + 1
+    : 0;
+
+  const dates = Array.isArray(userDoc?.activity_dates)
+    ? [...userDoc.activity_dates]
+    : [];
+
+  if (userDoc?.last_active_date) {
+    dates.push(userDoc.last_active_date);
+  }
+
+  const uniqueActivityDates = [
+    ...new Set(
+      dates
+        .map(toUtcDateKey)
+        .filter(
+          date =>
+            date &&
+            startDay &&
+            date >= startDay &&
+            date <= todayDay
+        )
+    )
+  ].sort();
+
+  return {
+    journeyStarted,
+    journeyStartDate: journeyStartDate || null,
+    journeyDays: Math.max(0, journeyDays),
+    activeDays: uniqueActivityDates.length,
+    activityDates: uniqueActivityDates,
+    lastActiveDate: userDoc?.last_active_date || null
+  };
+}
+/**
  * Canonical Daily Task Normalizer Adapter
  * Guarantees every task object adheres to one canonical contract
  */
@@ -4899,6 +4968,8 @@ You MUST return ONLY a valid JSON object matching this exact structure:
           mastery_pct: progressData.masteryPct,
           last_active_date: userDoc.last_active_date || null,
           activity_dates: userDoc.activity_dates || [],
+          ...getJourneyActivityMetrics(userDoc),
+          activityDates: progressData.allActivityDates || [],
           createdAt: userDoc.createdAt
         }
       });
@@ -5051,6 +5122,7 @@ You MUST return ONLY a valid JSON object matching this exact structure:
         totalTasksCount: progressData.totalTasks,
         masteryPct: progressData.masteryPct,
         topicStats: progressData.topicStats,
+        allActivityDates: progressData.allActivityDates || [],
         phaseAssessments: phaseAssessments.map(pa => ({
           submission_id: pa.submission_id,
           phase_key: pa.phase_key,
@@ -5072,6 +5144,11 @@ You MUST return ONLY a valid JSON object matching this exact structure:
           badge_earned: pa.badge_earned,
           submitted_at: pa.submitted_at
         })),
+        ...getJourneyActivityMetrics(userDoc),
+        journey_started: Boolean(userDoc.journey_started),
+        journey_start_date: userDoc.journey_start_date || null,
+        activity_dates: userDoc.activity_dates || [],
+        last_active_date: userDoc.last_active_date || null,
         tier: userDoc.current_skill_level || 'BEGINNER',
         domain: userDoc.chosen_domain || 'fullstack'
       });
