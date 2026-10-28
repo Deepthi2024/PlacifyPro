@@ -8220,11 +8220,11 @@ const journeyDays = journeyStarted && journeyStartDay
 
 const activityDateList = Array.isArray(progressMetrics?.activityDates)
   ? progressMetrics.activityDates
-  : (
-      Array.isArray(progressMetrics?.activity_dates)
-        ? progressMetrics.activity_dates
-        : []
-    );
+  : (Array.isArray(progressMetrics?.allActivityDates)
+      ? progressMetrics.allActivityDates
+      : (Array.isArray(progressMetrics?.activity_dates)
+          ? progressMetrics.activity_dates
+          : []));
 
 const activeDays = journeyStarted && journeyStartDay
   ? new Set([
