@@ -8186,7 +8186,67 @@ document.addEventListener('DOMContentLoaded', () => {
       const badges = Array.isArray(progressMetrics?.badges) && progressMetrics.badges.length > 0
         ? progressMetrics.badges
         : (Array.isArray(state.badges) && state.badges.length > 0 ? state.badges : ['🐣 Fresh Start']);
+      // Journey duration and active days are sourced from persisted backend activity dates.
+const journeyStartValue = progressMetrics?.journeyStartDate
+  || progressMetrics?.journey_start_date
+  || userRoadmap?.journey_start_date
+  || session.journey_start_date
+  || null;
 
+const journeyStarted = Boolean(
+  progressMetrics?.journeyStarted
+  ?? progressMetrics?.journey_started
+  ?? userRoadmap?.journey_started
+  ?? session.journey_started
+);
+
+const journeyStartDay = journeyStartValue
+  ? new Date(journeyStartValue).toISOString().slice(0, 10)
+  : null;
+
+const todayDay = new Date().toISOString().slice(0, 10);
+
+const journeyDays = journeyStarted && journeyStartDay
+  ? Math.max(
+      1,
+      Math.floor(
+        (
+          Date.parse(`${todayDay}T00:00:00Z`) -
+          Date.parse(`${journeyStartDay}T00:00:00Z`)
+        ) / 86400000
+      ) + 1
+    )
+  : 0;
+
+const activityDateList = Array.isArray(progressMetrics?.activityDates)
+  ? progressMetrics.activityDates
+  : (
+      Array.isArray(progressMetrics?.activity_dates)
+        ? progressMetrics.activity_dates
+        : []
+    );
+
+const activeDays = journeyStarted && journeyStartDay
+  ? new Set([
+      ...activityDateList,
+      ...(
+        progressMetrics?.lastActiveDate ||
+        progressMetrics?.last_active_date
+          ? [
+              progressMetrics.lastActiveDate ||
+              progressMetrics.last_active_date
+            ]
+          : []
+      )
+    ]
+      .map(date => String(date).slice(0, 10))
+      .filter(
+        date =>
+          date >= journeyStartDay &&
+          date <= todayDay
+      )
+  ).size
+  : 0;
       // 4. NO DATA STATE
       if (totalTasks === 0) {
         analyticsContainer.innerHTML = `
@@ -8349,7 +8409,24 @@ document.addEventListener('DOMContentLoaded', () => {
               <div style="font-size: 1.8rem; font-family: var(--font-heading); font-weight: 800; margin: 0.4rem 0;" id="analytics-streak-num">${streak} Days</div>
               <div style="font-size: 0.8rem; color: var(--text-muted);">Current Streak</div>
             </div>
+            <div class="glass-card" style="text-align: center; padding: 1.2rem;">
+  <i class="ph ph-calendar-check" style="font-size: 2rem; color: var(--accent-cyan);"></i>
 
+  <div
+    style="font-size: 1.8rem; font-family: var(--font-heading); font-weight: 800; margin: 0.4rem 0;"
+    id="analytics-active-days-num"
+  >${activeDays} / ${journeyDays}</div>
+
+  <div style="font-size: 0.8rem; color: var(--text-muted);">
+    Active Days / Journey Days
+  </div>
+
+  <div style="font-size: 0.72rem; color: rgba(255,255,255,0.45); margin-top: 0.2rem;">
+    ${journeyStartDay
+      ? `Started ${journeyStartDay}`
+      : 'Start your journey to begin tracking'}
+  </div>
+</div>
             <div class="glass-card" style="text-align: center; padding: 1.2rem;">
               <i class="ph ph-lightning" style="font-size: 2rem; color: var(--accent-cyan);"></i>
               <div style="font-size: 1.8rem; font-family: var(--font-heading); font-weight: 800; margin: 0.4rem 0;" id="analytics-xp-num">${xp}</div>
