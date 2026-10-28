@@ -8218,34 +8218,37 @@ const journeyDays = journeyStarted && journeyStartDay
     )
   : 0;
 
-const activityDateList = Array.isArray(progressMetrics?.activityDates)
-  ? progressMetrics.activityDates
-  : (Array.isArray(progressMetrics?.allActivityDates)
-      ? progressMetrics.allActivityDates
-      : (Array.isArray(progressMetrics?.activity_dates)
-          ? progressMetrics.activity_dates
-          : []));
+const activityDateList = Array.isArray(progressMetrics?.allActivityDates)
+  ? progressMetrics.allActivityDates
+  : (
+      Array.isArray(progressMetrics?.activityDates)
+        ? progressMetrics.activityDates
+        : (
+            Array.isArray(progressMetrics?.activity_dates)
+              ? progressMetrics.activity_dates
+              : []
+          )
+    );
 
 const activeDays = journeyStarted && journeyStartDay
-  ? new Set([
-      ...activityDateList,
-      ...(
-        progressMetrics?.lastActiveDate ||
-        progressMetrics?.last_active_date
-          ? [
-              progressMetrics.lastActiveDate ||
-              progressMetrics.last_active_date
-            ]
-          : []
-      )
-    ]
-      .map(date => String(date).slice(0, 10))
-      .filter(
-        date =>
+  ? new Set(
+      activityDateList
+        .map(date => {
+          if (!date) return null;
+
+          if (date instanceof Date) {
+            return date.toISOString().slice(0, 10);
+          }
+
+          return String(date).split('T')[0].trim();
+        })
+        .filter(date =>
+          date &&
+          /^\d{4}-\d{2}-\d{2}$/.test(date) &&
           date >= journeyStartDay &&
           date <= todayDay
-      )
-  ).size
+        )
+    ).size
   : 0;
       // 4. NO DATA STATE
       if (totalTasks === 0) {
