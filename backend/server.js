@@ -5122,6 +5122,7 @@ You MUST return ONLY a valid JSON object matching this exact structure:
         totalTasksCount: progressData.totalTasks,
         masteryPct: progressData.masteryPct,
         topicStats: progressData.topicStats,
+        allActivityDates: progressData.allActivityDates || [],
         phaseAssessments: phaseAssessments.map(pa => ({
           submission_id: pa.submission_id,
           phase_key: pa.phase_key,
