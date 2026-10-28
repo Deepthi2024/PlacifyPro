@@ -4969,6 +4969,7 @@ You MUST return ONLY a valid JSON object matching this exact structure:
           last_active_date: userDoc.last_active_date || null,
           activity_dates: userDoc.activity_dates || [],
           ...getJourneyActivityMetrics(userDoc),
+          activityDates: progressData.allActivityDates || [],
           createdAt: userDoc.createdAt
         }
       });
